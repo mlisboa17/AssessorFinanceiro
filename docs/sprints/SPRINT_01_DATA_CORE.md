@@ -141,4 +141,4 @@ A [definição global](../DEFINITION_OF_DONE.md) mais o teste de isolamento e a 
 
 Status: IN_PROGRESS
 
-01A Auth: DONE em 2026-10-10. E-mail e senha com Supabase Auth, clientes de browser e servidor usando só a chave publishable, renovação de sessão no proxy e verificação no servidor com `getClaims`. Tabelas, RLS, CRUD de cadastro e auditoria continuam pendentes.
+01A Auth: DONE em 2026-10-10. E-mail e senha com Supabase Auth, clientes de browser e servidor usando só a chave publishable, renovação de sessão no proxy e verificação no servidor com `getClaims`. O retorno da confirmação de e-mail entra em `/auth/callback`, troca o código por sessão e só então abre `/app`. Tabelas, RLS, CRUD de cadastro e auditoria continuam pendentes.

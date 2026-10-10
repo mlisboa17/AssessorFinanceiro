@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import {
   classifyAuthError,
@@ -7,6 +8,7 @@ import {
   messageForAuthFailure,
   type AuthFormState,
 } from "@/lib/supabase/auth-messages";
+import { requestOrigin } from "@/lib/supabase/confirmation";
 import { createClient } from "@/lib/supabase/server";
 
 export async function signup(
@@ -21,7 +23,12 @@ export async function signup(
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const emailRedirectTo = requestOrigin(await headers());
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: emailRedirectTo ? { emailRedirectTo } : undefined,
+  });
 
   if (error) {
     return { message: messageForAuthFailure(classifyAuthError(error)) };

@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { emailFromVerifiedClaims } from "@/lib/supabase/auth-messages";
+import { shouldForwardAuthCode } from "@/lib/supabase/confirmation";
 import { readSupabasePublicEnv } from "@/lib/supabase/env";
 
 export async function proxy(request: NextRequest) {
@@ -33,25 +34,39 @@ export async function proxy(request: NextRequest) {
 
   const { data } = await supabase.auth.getClaims();
   const email = emailFromVerifiedClaims(data?.claims ?? null);
+  const hasCode = request.nextUrl.searchParams.has("code");
+
+  if (shouldForwardAuthCode(request.nextUrl.pathname, hasCode)) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/auth/callback";
+    const redirectResponse = NextResponse.redirect(redirectUrl);
+    copySessionCookies(supabaseResponse, redirectResponse);
+    return redirectResponse;
+  }
+
   const isApp = request.nextUrl.pathname === "/app" || request.nextUrl.pathname.startsWith("/app/");
 
   if (!email && isApp) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
     const redirectResponse = NextResponse.redirect(redirectUrl);
-    supabaseResponse.cookies.getAll().forEach((cookie) => {
-      redirectResponse.cookies.set(cookie);
-    });
-    for (const header of ["cache-control", "expires", "pragma"]) {
-      const value = supabaseResponse.headers.get(header);
-      if (value) {
-        redirectResponse.headers.set(header, value);
-      }
-    }
+    copySessionCookies(supabaseResponse, redirectResponse);
     return redirectResponse;
   }
 
   return supabaseResponse;
+}
+
+function copySessionCookies(source: NextResponse, target: NextResponse) {
+  source.cookies.getAll().forEach((cookie) => {
+    target.cookies.set(cookie);
+  });
+  for (const header of ["cache-control", "expires", "pragma"]) {
+    const value = source.headers.get(header);
+    if (value) {
+      target.headers.set(header, value);
+    }
+  }
 }
 
 export const config = {

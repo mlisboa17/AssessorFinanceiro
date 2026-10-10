@@ -7,6 +7,7 @@ O formato segue a ideia de registro cronológico. Versões de produto só aparec
 ### Added
 
 - Autenticação 01A em 2026-10-10: cadastro e entrada por e-mail e senha, saída, área `/app` protegida no servidor e clientes Supabase de browser e servidor. Sem secret key, sem tabelas financeiras e sem Gemini.
+- Confirmação de e-mail da 01A: o código retornado pelo Supabase é trocado por sessão em `/auth/callback` antes do acesso a `/app`.
 - Fundação documental em 2026-10-10: especificação de produto, arquitetura, modelo lógico, regras de negócio, regras de IA, segurança, UX, roadmap, definição de pronto, decisões, cinco ADRs e as sprints 00 a 10.
 - Revisão crítica de produto e de arquitetura incorporada às premissas e às decisões em aberto.
 - Esqueleto Next.js 16 com TypeScript, ESLint, página inicial e teste em `node:test`.

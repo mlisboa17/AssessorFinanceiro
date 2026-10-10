@@ -16,6 +16,8 @@ const authSources = [
   "src/proxy.ts",
   "src/app/signup/actions.ts",
   "src/app/login/actions.ts",
+  "src/app/auth/callback/route.ts",
+  "src/lib/supabase/confirmation.ts",
   "src/app/app/actions.ts",
   "src/app/app/page.tsx",
 ];
