@@ -1,0 +1,39 @@
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: #1c1917;
+  background: #f6f5f2;
+}
+
+main {
+  box-sizing: border-box;
+  min-height: 100vh;
+  max-width: 36rem;
+  padding: 1.5rem;
+}
+
+h1 {
+  margin: 0 0 0.75rem;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 650;
+}
+
+p {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.status {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: #e7e5e0;
+  font-size: 0.875rem;
+}
