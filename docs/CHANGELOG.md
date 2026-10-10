@@ -6,6 +6,7 @@ O formato segue a ideia de registro cronológico. Versões de produto só aparec
 
 ### Added
 
+- Categorias 01D em 2026-10-10: tabela `public.categories`, com catálogo padrão somente leitura e categorias personalizadas por usuário. Sem transação, documento, Gemini ou classificação automática.
 - Contas e cartões 01C em 2026-10-10: tabelas `public.financial_accounts` e `public.payment_cards`, ligadas à entidade do mesmo usuário, com RLS de posse e telas `/app/accounts` e `/app/cards`. Sem transação, categoria, documento ou Gemini.
 - Entidades 01B em 2026-10-10: tabela `public.entities` para pessoa física e empresa, com RLS de posse, e tela `/app/entities` para listar, criar, renomear e ativar ou desativar.
 - Autenticação 01A em 2026-10-10: cadastro e entrada por e-mail e senha, saída, área `/app` protegida no servidor e clientes Supabase de browser e servidor. Sem secret key, sem tabelas financeiras e sem Gemini.
@@ -22,6 +23,6 @@ O formato segue a ideia de registro cronológico. Versões de produto só aparec
 
 ### Fora deste conjunto
 
-- Categoria, perfil, auditoria, bucket e o restante do CRUD financeiro.
+- Perfil, auditoria, bucket e o restante do CRUD financeiro.
 - Integração com a Gemini API.
 - Funcionalidade financeira.

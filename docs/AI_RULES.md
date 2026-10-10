@@ -85,6 +85,8 @@ Funções puras cobrem dinheiro, data e documento fiscal, com testes unitários 
 
 `suggested_category_name` é classificação sugerida. Não é fato e não equivale a valor, data ou estabelecimento. `suggested_paid_by_name` e `suggested_belongs_to_name` também não são copiados para colunas de fato. A interface pode mostrá-los como sugestão. A ligação de categoria com cadastro existente usa igualdade normalizada, regra explícita ou escolha humana.
 
+A entrega 01D gravou o catálogo em `public.categories`: linhas de sistema, sem dono, e linhas do usuário. Essa entrega não chama modelo, não sugere categoria e não grava regra de estabelecimento. Quando a leitura existir, a sugestão continua fora das colunas de fato e só pode apontar para uma categoria já existente.
+
 Conta bancária não possui campo de sugestão livre neste contrato. Sem identificador estável e seguro, a conta permanece nula.
 
 ## Confiança e status

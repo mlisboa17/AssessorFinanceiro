@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test tests/site.test.ts tests/auth.test.ts tests/confirmation.test.ts tests/entity.test.ts tests/account.test.ts tests/card.test.ts"
+    "test": "node --test tests/site.test.ts tests/auth.test.ts tests/confirmation.test.ts tests/entity.test.ts tests/account.test.ts tests/card.test.ts tests/category.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

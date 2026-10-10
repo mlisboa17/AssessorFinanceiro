@@ -1,6 +1,6 @@
 # Decisões
 
-Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, a implementação 01A de e-mail e senha, a materialização 01B de entidades e a materialização 01C de contas e cartões.
+Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, e as materializações 01A a 01D.
 
 As decisões difíceis de reverter e já aceitas estão nos ADRs 001 a 005. Este arquivo guarda as premissas usadas para planejar as sprints e as escolhas que ainda exigem validação humana.
 
@@ -129,6 +129,20 @@ O tipo da conta é `CHECKING`, `SAVINGS`, `DIGITAL`, `CASH` ou `OTHER`, por chec
 Não há `currency_code` nesta fatia, porque a conta ainda não é uma linha monetária. Não há vínculo entre cartão e conta. Não há policy de `DELETE`. As telas `/app/accounts` e `/app/cards` não criam entidade quando o usuário ainda não tem nenhuma.
 
 Os índices são `user_id`, para a lista protegida pelo RLS, e `entity_id`, para a chave estrangeira. `updated_at` usa uma função específica por tabela no schema `private`, sem framework genérico. `authenticated` tem só `SELECT`, `INSERT` e `UPDATE`. `anon` não tem privilégio.
+
+### 01D — Categorias
+
+A entrega 01D materializou `public.categories` como classificação, não como fato do comprovante. Não há chamada de modelo nem regra de estabelecimento.
+
+O catálogo padrão é compartilhado: `is_system = true` exige `user_id` nulo. Isso substitui, nesta fatia, a cópia por usuário descrita na premissa P-17. O usuário vê essas linhas e não as edita nem desativa pela interface. A policy de `UPDATE` também exige `is_system = false`, então a sessão não consegue alterá-las nem promover uma categoria própria a categoria de sistema.
+
+Categoria do usuário exige `user_id`. O identificador vem da sessão. O slug é gerado no servidor a partir do nome, em minúsculas e sem acento. O tipo aceita `EXPENSE`, `INCOME` e `TRANSFER`.
+
+`parent_id` existe e não pode apontar para a própria linha. A interface não mostra árvore e não procura ciclos mais longos.
+
+Unicidade: slug de sistema é único dentro do mesmo tipo. Slug de usuário é único entre as categorias ativas do mesmo usuário e do mesmo tipo. O seed das 23 categorias padrão usa `on conflict do nothing`.
+
+`authenticated` tem só `SELECT`, `INSERT` e `UPDATE`. `anon` não tem privilégio. Não há policy de `DELETE`. `updated_at` usa `private.set_categories_updated_at`, sem framework genérico.
 
 ### O-08 — Confirmação de transação
 

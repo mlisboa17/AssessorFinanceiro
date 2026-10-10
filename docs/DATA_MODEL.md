@@ -107,21 +107,26 @@ Uma tabela mestre só volta a ser considerada quando houver um caso real de fund
 
 ## Category
 
-Categoria do usuário, usada como classificação editável.
+Classificação financeira. Não é fato extraído do comprovante.
+
+Materialização: entrega 01D, em 2026-10-10. Tabela `public.categories`.
 
 | Coluna | Notas |
 | --- | --- |
-| `id` | |
-| `user_id` | |
-| `name` | Único entre as categorias ativas do usuário, depois de normalizar caixa e espaço |
-| `kind` | `expense` ou `income` |
+| `id` | `uuid` primário. O slug não é chave primária |
+| `user_id` | Nulo na categoria de sistema. Obrigatório na categoria do usuário. Referencia `auth.users(id)` com `on delete restrict` |
+| `name` | Texto não vazio |
+| `slug` | Minúsculo, estável, sem espaço. Derivado do nome |
+| `kind` | `EXPENSE`, `INCOME` ou `TRANSFER` |
+| `parent_id` | Opcional. Referencia `categories(id)` com `on delete restrict`. Não pode ser a própria linha |
+| `is_system` | `true` somente quando `user_id` é nulo |
+| `is_active` | `true` por omissão |
 | `created_at` | |
-| `updated_at` | |
-| `archived_at` | |
+| `updated_at` | Trigger específica `private.set_categories_updated_at` |
 
-Materialização: Sprint 01. Subcategoria e `parent_id` não fazem parte deste roadmap.
+As categorias padrão são linhas de sistema, visíveis a todo usuário autenticado e sem dono. A entrega 01D não copia essa lista para cada usuário. Categorias personalizadas pertencem a um usuário. A interface não edita a árvore: `parent_id` fica no banco, sem tela de hierarquia.
 
-A lista inicial da premissa P-17 é copiada por usuário. Categoria sugerida pela leitura não cria linha.
+Slug de sistema é único dentro do mesmo `kind`. Slug de usuário é único entre as categorias ativas do mesmo usuário e do mesmo `kind`. A leitura futura não cria categoria.
 
 ## FinancialDocument
 

@@ -145,4 +145,6 @@ Status: IN_PROGRESS
 
 01B Entity: DONE em 2026-10-10. Tabela `public.entities` com RLS, policies de posse, privilégios `SELECT`/`INSERT`/`UPDATE` para `authenticated` e tela `/app/entities` para listar, criar, renomear e ativar ou desativar. O `user_id` vem da sessão no servidor.
 
-01C Accounts and cards: DONE em 2026-10-10. Tabelas `public.financial_accounts` e `public.payment_cards`, com entidade do mesmo usuário garantida por chave estrangeira composta, RLS de posse e telas `/app/accounts` e `/app/cards`. Perfil, categoria, auditoria e criação automática de pessoa física continuam pendentes.
+01C Accounts and cards: DONE em 2026-10-10. Tabelas `public.financial_accounts` e `public.payment_cards`, com entidade do mesmo usuário garantida por chave estrangeira composta, RLS de posse e telas `/app/accounts` e `/app/cards`.
+
+01D Categories: DONE em 2026-10-10. Tabela `public.categories`, com catálogo de sistema sem dono, categorias do usuário, RLS e tela `/app/categories`. Perfil, auditoria e criação automática de pessoa física continuam pendentes.

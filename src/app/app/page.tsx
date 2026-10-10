@@ -38,6 +38,9 @@ async function AuthenticatedSession() {
       <p className="switch">
         <Link href="/app/cards">Cartões</Link>
       </p>
+      <p className="switch">
+        <Link href="/app/categories">Categorias</Link>
+      </p>
       <form action={signOut}>
         <button type="submit">Sair</button>
       </form>
