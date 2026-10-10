@@ -1,6 +1,6 @@
 # Decisões
 
-Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação e as decisões O-02, O-04 e O-08.
+Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, e a implementação 01A de e-mail e senha.
 
 As decisões difíceis de reverter e já aceitas estão nos ADRs 001 a 005. Este arquivo guarda as premissas usadas para planejar as sprints e as escolhas que ainda exigem validação humana.
 
@@ -98,7 +98,7 @@ A interface poderá converter HEIC para um formato suportado antes do processame
 
 ### O-04 — Login
 
-O MVP usa e-mail e senha. A autenticação será Supabase Auth na Sprint 01, e essa escolha não impede magic link no futuro. A Sprint 00 não implementa Auth.
+O MVP usa e-mail e senha. A autenticação é Supabase Auth, e essa escolha não impede magic link no futuro. A Sprint 00 não implementou Auth. A entrega 01A, em 2026-10-10, implementou cadastro, entrada, saída e a área `/app`. A sessão é verificada no servidor com `getClaims`. `user_metadata` não autoriza acesso. Magic link continua fora desta entrega.
 
 ### O-08 — Confirmação de transação
 

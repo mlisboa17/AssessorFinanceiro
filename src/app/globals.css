@@ -37,3 +37,49 @@ p {
   background: #e7e5e0;
   font-size: 0.875rem;
 }
+
+.auth-form {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+}
+
+label {
+  font-size: 0.9375rem;
+}
+
+input,
+button {
+  font: inherit;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid #d6d3d1;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+button {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: #1c1917;
+  color: #fafaf9;
+}
+
+button:disabled {
+  opacity: 0.6;
+}
+
+.message,
+.switch {
+  margin-top: 0.75rem;
+}
+
+.switch a {
+  color: inherit;
+}

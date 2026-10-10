@@ -2,7 +2,7 @@
 
 Aplicação para registrar, organizar e revisar despesas pessoais e empresariais. A captura começa pelo comprovante. A leitura automática vem depois, e só vira lançamento o que tiver evidência e confirmação humana.
 
-Esta pasta está na Sprint 00. Há um aplicativo Next.js mínimo. Não há Supabase, Gemini nem regra financeira implementados.
+A Sprint 00 está DONE. A Sprint 01 está em andamento: a entrega 01A autentica com e-mail e senha. Não há Gemini nem regra financeira implementados.
 
 ## Propósito
 
@@ -15,7 +15,7 @@ O produto não é escrituração contábil e não calcula obrigação fiscal.
 - Node.js 25, versão usada nesta fundação
 - npm 11
 
-Não é necessário configurar Supabase nem Gemini para instalar, testar ou construir.
+Os testes unitários e o lint não precisam de chave secreta. As rotas de autenticação precisam de `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` em `.env.local`. Gemini não é necessário.
 
 ## Instalação
 
@@ -31,7 +31,7 @@ O arquivo `.env.example` só reserva nomes. Copiar para `.env.local` é opcional
 npm run dev
 ```
 
-Abra `http://localhost:3000`. A página mostra o nome do produto, uma frase de propósito e o estado "Projeto em configuração".
+Abra `http://localhost:3000`. A página inicial mostra o nome do produto, uma frase de propósito e o estado "Projeto em configuração". O cadastro fica em `/signup`, a entrada em `/login` e a área autenticada em `/app`.
 
 ## Testes
 
@@ -58,10 +58,11 @@ npm run lint
 ## Estrutura
 
 ```text
-src/app/          rotas e página inicial
+src/app/          rotas, página inicial e autenticação
 src/components/   apresentação da página inicial
-src/lib/          texto público do produto
-tests/            teste do texto público
+src/lib/          texto público e clientes Supabase
+src/proxy.ts      renovação da sessão
+tests/            texto público e regras de autenticação
 docs/             fonte da verdade do produto
 ```
 
@@ -72,7 +73,7 @@ Não há camadas de domínio, repositório ou serviço. Elas só entram quando e
 - `.env`, `.env.local` e os demais `.env.*` ficam fora do Git.
 - `.env.example` é versionado e não contém valor.
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` é a chave pública atual do Supabase. Ela não autoriza dados sozinha.
-- `SUPABASE_SECRET_KEY` é a chave secreta atual do Supabase. Ela fica só no servidor e não é usada nesta sprint.
+- `SUPABASE_SECRET_KEY` é a chave secreta atual do Supabase. Ela fica só no servidor e a autenticação 01A não a usa.
 - `GEMINI_API_KEY` fica só no servidor. O navegador não importa cliente de IA.
 - Nenhum segredo entra em `NEXT_PUBLIC_`.
 
@@ -92,9 +93,9 @@ Em conflito, um ADR aceito prevalece sobre regra de negócio, que prevalece sobr
 
 | Item | Estado |
 | --- | --- |
-| Aplicação Next.js | Página inicial estática |
-| Testes, lint e build | Configurados na Sprint 00 |
-| Projeto Supabase | Não conectado |
+| Aplicação Next.js | Página inicial e autenticação |
+| Testes, lint e build | Configurados |
+| Projeto Supabase | Auth por e-mail e senha |
 | Gemini | Não integrado |
 | Sprint 00 | DONE |
-| Sprint 01 | PLANNED, aguardando revisão humana |
+| Sprint 01 | IN_PROGRESS; 01A DONE |
