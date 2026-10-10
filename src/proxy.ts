@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { emailFromVerifiedClaims } from "@/lib/supabase/auth-messages";
 import { shouldForwardAuthCode } from "@/lib/supabase/confirmation";
 import { readSupabasePublicEnv } from "@/lib/supabase/env";
+import { isProtectedAppPath } from "@/lib/supabase/routes";
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -44,7 +45,7 @@ export async function proxy(request: NextRequest) {
     return redirectResponse;
   }
 
-  const isApp = request.nextUrl.pathname === "/app" || request.nextUrl.pathname.startsWith("/app/");
+  const isApp = isProtectedAppPath(request.nextUrl.pathname);
 
   if (!email && isApp) {
     const redirectUrl = request.nextUrl.clone();

@@ -83,3 +83,23 @@ button:disabled {
 .switch a {
   color: inherit;
 }
+
+select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid #d6d3d1;
+  border-radius: 0.5rem;
+  background: #fff;
+  font: inherit;
+}
+
+.entity-list {
+  margin: 1.25rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entity-list li {
+  margin: 0 0 1.5rem;
+}

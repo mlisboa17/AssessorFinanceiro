@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { signOut } from "@/app/app/actions";
 import { emailFromVerifiedClaims } from "@/lib/supabase/auth-messages";
@@ -28,6 +29,9 @@ async function AuthenticatedSession() {
       <h1>Assessor Financeiro</h1>
       <p>Autenticação concluída.</p>
       <p>E-mail: {email}</p>
+      <p className="switch">
+        <Link href="/app/entities">Entidades</Link>
+      </p>
       <form action={signOut}>
         <button type="submit">Sair</button>
       </form>

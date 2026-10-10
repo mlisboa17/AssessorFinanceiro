@@ -141,4 +141,6 @@ A [definição global](../DEFINITION_OF_DONE.md) mais o teste de isolamento e a 
 
 Status: IN_PROGRESS
 
-01A Auth: DONE em 2026-10-10. E-mail e senha com Supabase Auth, clientes de browser e servidor usando só a chave publishable, renovação de sessão no proxy e verificação no servidor com `getClaims`. O retorno da confirmação de e-mail entra em `/auth/callback`, troca o código por sessão e só então abre `/app`. Tabelas, RLS, CRUD de cadastro e auditoria continuam pendentes.
+01A Auth: DONE em 2026-10-10. E-mail e senha com Supabase Auth, clientes de browser e servidor usando só a chave publishable, renovação de sessão no proxy e verificação no servidor com `getClaims`. O retorno da confirmação de e-mail entra em `/auth/callback`, troca o código por sessão e só então abre `/app`.
+
+01B Entity: DONE em 2026-10-10. Tabela `public.entities` com RLS, policies de posse, privilégios `SELECT`/`INSERT`/`UPDATE` para `authenticated` e tela `/app/entities` para listar, criar, renomear e ativar ou desativar. O `user_id` vem da sessão no servidor. Perfil, conta, cartão, categoria, auditoria e criação automática de pessoa física continuam pendentes.

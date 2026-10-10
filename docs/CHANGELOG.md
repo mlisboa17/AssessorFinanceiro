@@ -6,6 +6,7 @@ O formato segue a ideia de registro cronológico. Versões de produto só aparec
 
 ### Added
 
+- Entidades 01B em 2026-10-10: tabela `public.entities` para pessoa física e empresa, com RLS de posse, e tela `/app/entities` para listar, criar, renomear e ativar ou desativar. Sem conta, cartão, transação, documento ou Gemini.
 - Autenticação 01A em 2026-10-10: cadastro e entrada por e-mail e senha, saída, área `/app` protegida no servidor e clientes Supabase de browser e servidor. Sem secret key, sem tabelas financeiras e sem Gemini.
 - Confirmação de e-mail da 01A: o código retornado pelo Supabase é trocado por sessão em `/auth/callback` antes do acesso a `/app`.
 - Fundação documental em 2026-10-10: especificação de produto, arquitetura, modelo lógico, regras de negócio, regras de IA, segurança, UX, roadmap, definição de pronto, decisões, cinco ADRs e as sprints 00 a 10.
@@ -20,6 +21,6 @@ O formato segue a ideia de registro cronológico. Versões de produto só aparec
 
 ### Fora deste conjunto
 
-- Schema, policies, bucket e CRUD financeiro.
+- Conta, cartão, categoria, perfil, auditoria, bucket e o restante do CRUD financeiro.
 - Integração com a Gemini API.
 - Funcionalidade financeira.

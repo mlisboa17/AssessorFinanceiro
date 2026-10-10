@@ -1,6 +1,6 @@
 # Decisões
 
-Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, e a implementação 01A de e-mail e senha.
+Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, a implementação 01A de e-mail e senha, e a materialização 01B de entidades.
 
 As decisões difíceis de reverter e já aceitas estão nos ADRs 001 a 005. Este arquivo guarda as premissas usadas para planejar as sprints e as escolhas que ainda exigem validação humana.
 
@@ -99,6 +99,24 @@ A interface poderá converter HEIC para um formato suportado antes do processame
 ### O-04 — Login
 
 O MVP usa e-mail e senha. A autenticação é Supabase Auth, e essa escolha não impede magic link no futuro. A Sprint 00 não implementou Auth. A entrega 01A, em 2026-10-10, implementou cadastro, entrada, saída e a área `/app`. A sessão é verificada no servidor com `getClaims`. `user_metadata` não autoriza acesso. Magic link continua fora desta entrega.
+
+### 01B — Entidade financeira
+
+A entrega 01B materializou somente `public.entities`. Conta, cartão, categoria, perfil, auditoria, documento e transação continuam fora.
+
+O tipo persistido é `PERSON` ou `COMPANY`, na coluna `type`. O documento fiscal fica em `document_number`, apenas com dígitos, sem coluna separada de CPF/CNPJ e sem dígito verificador nesta entrega. Ativo ou inativo usa `is_active`. Os nomes lógicos anteriores `kind`, `tax_id`, `tax_id_type` e `archived_at` não foram criados.
+
+Nenhuma entidade pessoa física é criada no cadastro ou no primeiro acesso. Isso suspende, para esta fatia, a parte de entidade da premissa P-17. O usuário adiciona a primeira entidade explicitamente.
+
+`user_id` referencia `auth.users(id)` com `on delete restrict`. Apagar o usuário autenticado fica bloqueado enquanto existir entidade. A exclusão de conta continua dependente de O-03.
+
+Não havia trigger de `updated_at` no projeto. Foi criada só a função `private.set_entities_updated_at`, com `search_path` vazio, sem `security definer`, e o trigger `entities_set_updated_at`. Não há framework genérico de trigger.
+
+O índice é `entities_user_id_idx` em `user_id`. Índice composto com `is_active` não foi criado: a lista mostra ativas e inativas.
+
+RLS está ligado. Policies de `SELECT`, `INSERT` e `UPDATE` exigem `(select auth.uid()) = user_id`. `INSERT` e `UPDATE` também usam `with check`. Não há policy de `DELETE`.
+
+A Data API do projeto não expõe tabela nova sozinha. `authenticated` recebeu `SELECT`, `INSERT` e `UPDATE`. `TRUNCATE`, `REFERENCES` e `TRIGGER` foram revogados desse papel. `anon` não tem privilégio na tabela.
 
 ### O-08 — Confirmação de transação
 

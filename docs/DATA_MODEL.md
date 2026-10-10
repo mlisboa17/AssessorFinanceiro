@@ -1,6 +1,6 @@
 # Modelo de dados
 
-Estado: modelo lógico de 2026-10-10. Nenhuma tabela foi criada. Uma tabela só passa a existir na sprint indicada em "Materialização".
+Estado: modelo lógico de 2026-10-10, com a tabela `public.entities` materializada na entrega 01B. As demais tabelas continuam lógicas até a sprint indicada em "Materialização".
 
 Convenções para quando o schema for escrito:
 
@@ -32,25 +32,26 @@ Posse: a linha existe somente para o próprio `id`.
 
 ## Entity
 
-Pessoa física ou empresa que paga ou que carrega o efeito econômico.
+Pessoa física ou empresa à qual dados financeiros podem pertencer. Cada linha pertence a exatamente um usuário autenticado. Um usuário pode ter várias entidades. Empresa não é um usuário separado.
+
+Materialização: entrega 01B, em 2026-10-10. Tabela `public.entities`.
 
 | Coluna | Notas |
 | --- | --- |
-| `id` | |
-| `user_id` | Dono |
-| `kind` | `individual` ou `company` |
-| `name` | |
-| `tax_id` | CPF ou CNPJ, nulo se desconhecido |
-| `tax_id_type` | `cpf`, `cnpj` ou nulo |
-| `created_at` | |
-| `updated_at` | |
-| `archived_at` | Nulo enquanto ativa |
+| `id` | `uuid` primário, `gen_random_uuid()` |
+| `user_id` | Dono. `not null`, referencia `auth.users(id)` com `on delete restrict` |
+| `type` | `PERSON` ou `COMPANY` |
+| `name` | Texto não vazio depois de remover espaços das pontas |
+| `document_number` | CPF para `PERSON` e CNPJ para `COMPANY`. Nulo se desconhecido. Só dígitos, sem máscara |
+| `is_active` | `true` por omissão. Desativar não apaga a linha |
+| `created_at` | `timestamptz` |
+| `updated_at` | `timestamptz`, preenchido por trigger específica no schema `private` |
 
-Materialização: Sprint 01.
+A entrega 01B não cria entidade no cadastro nem no primeiro acesso. Sem entidades, a tela mostra o estado vazio. A leitura de comprovante continua sem inserir entidade.
 
-O primeiro acesso cria uma entidade `individual`. Empresas adicionais são cadastro explícito do usuário. A leitura de um comprovante não insere entidade.
+`document_number` aceita nulo ou uma sequência de dígitos. Dígito verificador de CPF/CNPJ e unicidade entre entidades ativas do mesmo usuário não fazem parte desta entrega.
 
-`tax_id`, quando presente, precisa passar no dígito verificador. Identificadores de duas entidades ativas do mesmo usuário não se repetem.
+Não há policy de `DELETE` e a interface não apaga a linha. Enquanto existir entidade, a exclusão do usuário autenticado fica bloqueada pela chave estrangeira, até a decisão O-03.
 
 ## FinancialAccount
 
