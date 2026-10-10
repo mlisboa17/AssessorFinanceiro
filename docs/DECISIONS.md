@@ -88,7 +88,7 @@ A Sprint 08 grava correspondências confirmadas pelo usuário, como final de car
 
 ### P-17 — Cadastros mínimos na Sprint 01
 
-O primeiro acesso cria o perfil e uma entidade pessoa física. Categorias iniciais são copiadas para o usuário: Alimentação, Transporte, Moradia, Saúde, Educação, Serviços, Impostos, Assinaturas e Outros. O usuário pode arquivar ou renomear.
+O primeiro acesso cria o perfil e uma entidade pessoa física. A redação original previa copiar categorias iniciais para cada usuário. A entrega 01D, confirmada na auditoria 01E, substituiu essa cópia por um catálogo compartilhado: `is_system = true` e `user_id` nulo. As 23 categorias padrão não são duplicadas por usuário e o usuário não as edita.
 
 ## Decisões aprovadas em 2026-10-10
 
@@ -143,6 +143,12 @@ Categoria do usuário exige `user_id`. O identificador vem da sessão. O slug é
 Unicidade: slug de sistema é único dentro do mesmo tipo. Slug de usuário é único entre as categorias ativas do mesmo usuário e do mesmo tipo. O seed das 23 categorias padrão usa `on conflict do nothing`.
 
 `authenticated` tem só `SELECT`, `INSERT` e `UPDATE`. `anon` não tem privilégio. Não há policy de `DELETE`. `updated_at` usa `private.set_categories_updated_at`, sem framework genérico.
+
+### 01E — Auditoria de posse
+
+A auditoria de `entities`, `financial_accounts`, `payment_cards` e `categories` não encontrou falha que exigisse migration ou mudança de policy. RLS está ligado. `anon` e `authenticated` não ignoram RLS. `FORCE RLS` não foi ligado: a Data API usa esses dois papéis, que não são donos das tabelas. `postgres` e `service_role` continuam com `BYPASSRLS`, e a aplicação não os usa.
+
+A função `public.rls_auto_enable` é um event trigger da plataforma, `SECURITY DEFINER`, ligado a `ensure_rls`. Ela só habilita RLS em `CREATE TABLE` no schema `public`. A chamada anônima pela Data API retornou HTTP 400 e não leu nem alterou linha de negócio. O aviso do advisor fica aceito. A função não foi alterada.
 
 ### O-08 — Confirmação de transação
 

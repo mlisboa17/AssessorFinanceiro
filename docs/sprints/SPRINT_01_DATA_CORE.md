@@ -147,4 +147,6 @@ Status: IN_PROGRESS
 
 01C Accounts and cards: DONE em 2026-10-10. Tabelas `public.financial_accounts` e `public.payment_cards`, com entidade do mesmo usuário garantida por chave estrangeira composta, RLS de posse e telas `/app/accounts` e `/app/cards`.
 
-01D Categories: DONE em 2026-10-10. Tabela `public.categories`, com catálogo de sistema sem dono, categorias do usuário, RLS e tela `/app/categories`. Perfil, auditoria e criação automática de pessoa física continuam pendentes.
+01D Categories: DONE em 2026-10-10. Tabela `public.categories`, com catálogo de sistema sem dono, categorias do usuário, RLS e tela `/app/categories`.
+
+01E Security review: DONE em 2026-10-10. Auditoria de RLS, grants, posse e integridade das quatro tabelas. Nenhuma falha exigiu migration. O catálogo padrão permanece compartilhado. Perfil, auditoria e criação automática de pessoa física continuam pendentes. A Sprint 01 segue `IN_PROGRESS` até a 01F.

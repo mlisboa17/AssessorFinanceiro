@@ -124,7 +124,7 @@ Materialização: entrega 01D, em 2026-10-10. Tabela `public.categories`.
 | `created_at` | |
 | `updated_at` | Trigger específica `private.set_categories_updated_at` |
 
-As categorias padrão são linhas de sistema, visíveis a todo usuário autenticado e sem dono. A entrega 01D não copia essa lista para cada usuário. Categorias personalizadas pertencem a um usuário. A interface não edita a árvore: `parent_id` fica no banco, sem tela de hierarquia.
+As categorias padrão são linhas de sistema, visíveis a todo usuário autenticado e sem dono. A entrega 01D não copia essa lista para cada usuário. A auditoria 01E manteve essa decisão: as 23 linhas padrão não são duplicadas por usuário. Categorias personalizadas pertencem a um usuário. A interface não edita a árvore: `parent_id` fica no banco, sem tela de hierarquia.
 
 Slug de sistema é único dentro do mesmo `kind`. Slug de usuário é único entre as categorias ativas do mesmo usuário e do mesmo `kind`. A leitura futura não cria categoria.
 

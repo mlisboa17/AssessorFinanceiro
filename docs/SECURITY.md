@@ -1,6 +1,6 @@
 # Segurança
 
-Estado: especificação de 2026-10-10. Nenhuma policy, bucket, variável ou projeto foi criado. Na sprint que for aplicar esta especificação, a sintaxe vigente da documentação do Supabase deve ser conferida de novo. O produto muda de versão com frequência.
+Estado: especificação de 2026-10-10, com a auditoria 01E das tabelas `entities`, `financial_accounts`, `payment_cards` e `categories`. Bucket e `audit_log` continuam fora. A sintaxe do Supabase muda com frequência e foi conferida nesta auditoria.
 
 ## Objetivo
 
@@ -18,7 +18,7 @@ O usuário A não lê, altera, apaga nem infere dados financeiros do usuário B.
 
 Toda tabela criada no schema exposto, em especial `public`, nasce com RLS habilitado na mesma migration que a cria. A migration também concede só o que cada papel precisa.
 
-Especificação de concessão, ainda não aplicada:
+Concessão conferida na auditoria 01E para as quatro tabelas de cadastro:
 
 - `anon` não recebe acesso às tabelas financeiras nem ao bucket de comprovantes.
 - `authenticated` recebe apenas as operações que a sprint realmente usa.
@@ -97,6 +97,18 @@ Até O-03, o produto não oferece apagar a conta nem promete prazo de descarte.
 - Dependência nova, quando uma sprint realmente precisar, entra no registro da sprint. Não se antecipa biblioteca de criptografia, fila ou auth paralela.
 - Cabeçalho, CORS amplo e endpoint anônimo de upload não fazem parte do desenho.
 
-## O que esta especificação não faz
+## Revisão 01E
 
-Não cria policy, não liga advisor, não configura o painel e não revisa um projeto já existente. A primeira revisão executável ocorre na Sprint 01 para tabelas e na Sprint 02 para o bucket. O critério é o teste de dois usuários, mais a verificação de que o bucket recusa acesso sem sessão.
+Em 2026-10-10, as quatro tabelas de cadastro foram auditadas no banco real.
+
+- RLS está habilitado. Não há policy de `DELETE`.
+- `anon` não tem privilégio. A Data API anônima respondeu 401 nas quatro tabelas.
+- `authenticated` tem somente `SELECT`, `INSERT` e `UPDATE`. Não tem `TRUNCATE`, `REFERENCES` nem `TRIGGER`.
+- Conta e cartão referenciam `entities(id, user_id)`. A relação com entidade de outro usuário foi recusada.
+- Categoria de sistema é legível e não é editável. Categoria privada não é visível para o outro usuário.
+- `payment_cards` guarda no máximo `last_four`. Não há coluna de número completo, código de segurança, validade ou token.
+- As funções de `updated_at` ficam no schema `private`, sem `SECURITY DEFINER`, com `search_path` vazio, e sem `EXECUTE` para `anon` ou `authenticated`.
+- `public.rls_auto_enable` é event trigger da plataforma. O aviso do advisor foi aceito, conforme `DECISIONS.md`. Não houve mudança de função.
+- Avisos de índice sem uso e de chave estrangeira composta sem índice exatamente na ordem das colunas são desempenho, não autorização. Não foram alterados.
+
+A revisão do bucket continua prevista para a Sprint 02.
