@@ -6,6 +6,7 @@ O formato segue a ideia de registro cronológico. Versões de produto só aparec
 
 ### Added
 
+- Trilha 01F em 2026-10-10: `private.audit_log` imutável para entidades, contas, cartões e categorias, escrita só por trigger. Sem tela, sem RPC e sem acesso direto de `anon` ou `authenticated`.
 - Auditoria 01E em 2026-10-10: revisão de RLS, grants e posse de entidades, contas, cartões e categorias. Sem falha que exigisse migration. O aviso de `rls_auto_enable` foi aceito como event trigger da plataforma.
 - Categorias 01D em 2026-10-10: tabela `public.categories`, com catálogo padrão somente leitura e categorias personalizadas por usuário. Sem transação, documento, Gemini ou classificação automática.
 - Contas e cartões 01C em 2026-10-10: tabelas `public.financial_accounts` e `public.payment_cards`, ligadas à entidade do mesmo usuário, com RLS de posse e telas `/app/accounts` e `/app/cards`. Sem transação, categoria, documento ou Gemini.
@@ -24,6 +25,6 @@ O formato segue a ideia de registro cronológico. Versões de produto só aparec
 
 ### Fora deste conjunto
 
-- Perfil, auditoria, bucket e o restante do CRUD financeiro.
+- Perfil, bucket e o restante do CRUD financeiro.
 - Integração com a Gemini API.
 - Funcionalidade financeira.

@@ -139,7 +139,7 @@ A [definição global](../DEFINITION_OF_DONE.md) mais o teste de isolamento e a 
 
 ## Status
 
-Status: IN_PROGRESS
+Status: DONE
 
 01A Auth: DONE em 2026-10-10. E-mail e senha com Supabase Auth, clientes de browser e servidor usando só a chave publishable, renovação de sessão no proxy e verificação no servidor com `getClaims`. O retorno da confirmação de e-mail entra em `/auth/callback`, troca o código por sessão e só então abre `/app`.
 
@@ -149,4 +149,6 @@ Status: IN_PROGRESS
 
 01D Categories: DONE em 2026-10-10. Tabela `public.categories`, com catálogo de sistema sem dono, categorias do usuário, RLS e tela `/app/categories`.
 
-01E Security review: DONE em 2026-10-10. Auditoria de RLS, grants, posse e integridade das quatro tabelas. Nenhuma falha exigiu migration. O catálogo padrão permanece compartilhado. Perfil, auditoria e criação automática de pessoa física continuam pendentes. A Sprint 01 segue `IN_PROGRESS` até a 01F.
+01E Security review: DONE em 2026-10-10. Auditoria de RLS, grants, posse e integridade das quatro tabelas. Nenhuma falha exigiu migration. O catálogo padrão permanece compartilhado.
+
+01F Audit log: DONE em 2026-10-10. `private.audit_log` registra insert, update e delete das quatro tabelas de cadastro. A escrita é trigger. `anon` e `authenticated` não leem nem gravam a trilha. Perfil e criação automática de pessoa física continuam fora, pelas decisões anteriores. A Sprint 01 está `DONE`.

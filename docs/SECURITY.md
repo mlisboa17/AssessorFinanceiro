@@ -1,6 +1,6 @@
 # Segurança
 
-Estado: especificação de 2026-10-10, com a auditoria 01E das tabelas `entities`, `financial_accounts`, `payment_cards` e `categories`. Bucket e `audit_log` continuam fora. A sintaxe do Supabase muda com frequência e foi conferida nesta auditoria.
+Estado: especificação de 2026-10-10, com a auditoria 01E das tabelas de cadastro e a trilha 01F em `private.audit_log`. Bucket continua fora. A sintaxe do Supabase muda com frequência e foi conferida nesta entrega.
 
 ## Objetivo
 
@@ -32,7 +32,7 @@ Forma das policies de tabela de negócio:
 - `UPDATE` sem `SELECT` correspondente é especificação incompleta, porque o Postgres precisa ler a linha para alterá-la.
 - A expressão `(select auth.uid())` evita reavaliar a função linha a linha. Confirmar essa forma na documentação vigente no momento da Sprint 01.
 
-`audit_log` é diferente: `authenticated` só possui `SELECT` da própria trilha. `INSERT`, `UPDATE` e `DELETE` não são concedidos ao cliente. A escrita é trigger em função `security definer` colocada em schema privado, não exposto na API. O schema privado não entra nas grants de `anon` nem de `authenticated`.
+`private.audit_log` não é concedida a `anon` nem a `authenticated`. Não há `SELECT` nesta sprint. A escrita é o trigger `private.audit_row_change()`, `security definer`, com `search_path` vazio. `EXECUTE` foi revogado de `public`, `anon` e `authenticated`; o disparo do trigger continuou válido. Não existe função equivalente em `public`.
 
 Views, se alguma sprint precisar delas, nascem com `security_invoker = true`. View sem essa propriedade não é aceita como superfície de leitura.
 
@@ -110,5 +110,15 @@ Em 2026-10-10, as quatro tabelas de cadastro foram auditadas no banco real.
 - As funções de `updated_at` ficam no schema `private`, sem `SECURITY DEFINER`, com `search_path` vazio, e sem `EXECUTE` para `anon` ou `authenticated`.
 - `public.rls_auto_enable` é event trigger da plataforma. O aviso do advisor foi aceito, conforme `DECISIONS.md`. Não houve mudança de função.
 - Avisos de índice sem uso e de chave estrangeira composta sem índice exatamente na ordem das colunas são desempenho, não autorização. Não foram alterados.
+
+## Revisão 01F
+
+Em 2026-10-10, `private.audit_log` passou a registrar insert, update e delete de `entities`, `financial_accounts`, `payment_cards` e `categories`.
+
+- O dono sai de `user_id` da linha. O ator sai de `auth.uid()`.
+- `UPDATE` grava o estado anterior e o estado final, depois do trigger de `updated_at`. `changed_fields` não inclui `updated_at`.
+- `INSERT` e `DELETE` deixam `changed_fields` nulo.
+- A Data API não enxerga a tabela nem a função. Tentativas autenticadas e anônimas de ler, inserir, alterar ou apagar a trilha falharam.
+- O advisor marca RLS sem policy em `private.audit_log` como informação. A policy não foi criada: a ausência de policy é a barreira, e uma policy de leitura abriria a trilha. `public.rls_auto_enable` permanece o aviso já aceito na 01E.
 
 A revisão do bucket continua prevista para a Sprint 02.

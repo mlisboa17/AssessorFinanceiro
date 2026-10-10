@@ -1,6 +1,6 @@
 # Decisões
 
-Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, e as materializações 01A a 01D.
+Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, e as materializações 01A a 01F.
 
 As decisões difíceis de reverter e já aceitas estão nos ADRs 001 a 005. Este arquivo guarda as premissas usadas para planejar as sprints e as escolhas que ainda exigem validação humana.
 
@@ -149,6 +149,18 @@ Unicidade: slug de sistema é único dentro do mesmo tipo. Slug de usuário é �
 A auditoria de `entities`, `financial_accounts`, `payment_cards` e `categories` não encontrou falha que exigisse migration ou mudança de policy. RLS está ligado. `anon` e `authenticated` não ignoram RLS. `FORCE RLS` não foi ligado: a Data API usa esses dois papéis, que não são donos das tabelas. `postgres` e `service_role` continuam com `BYPASSRLS`, e a aplicação não os usa.
 
 A função `public.rls_auto_enable` é um event trigger da plataforma, `SECURITY DEFINER`, ligado a `ensure_rls`. Ela só habilita RLS em `CREATE TABLE` no schema `public`. A chamada anônima pela Data API retornou HTTP 400 e não leu nem alterou linha de negócio. O aviso do advisor fica aceito. A função não foi alterada.
+
+### 01F — Trilha de auditoria
+
+A trilha ficou em `private.audit_log`, fora da Data API. Uma função, `private.audit_row_change()`, atende as quatro tabelas de cadastro porque o registro pedido é o mesmo. Não há framework além disso.
+
+`security definer` é necessário: `authenticated` não tem `INSERT` na trilha, e o trigger precisa gravá-la. A função está no schema `private`, com `search_path` vazio, objetos qualificados e `EXECUTE` revogado de `public`, `anon` e `authenticated`. O teste real mostrou que o trigger continua disparando depois dessa revogação. `actor_user_id` vem de `auth.uid()`. `owner_user_id` vem da linha. Nenhum dos dois vem do client.
+
+`changed_fields` é nulo em `INSERT` e `DELETE`. Em `UPDATE`, lista só colunas cujo valor mudou, sem `updated_at`. A primeira versão da função chamava `pg_catalog.coalesce(text, text)`, que neste Postgres não existe com `search_path` vazio. A migration seguinte substituiu essa chamada por um laço nas chaves do snapshot. A migration já aplicada não foi editada.
+
+A redação anterior previa leitura da própria trilha pelo usuário autenticado. Esta entrega não concede `SELECT` e não cria tela nem RPC. A consulta fica para uma superfície futura de suporte. RLS sem policy em `private.audit_log` permanece de propósito.
+
+Categoria de sistema pode ter `owner_user_id` nulo. Mudança sem sessão de usuário pode ter `actor_user_id` nulo.
 
 ### O-08 — Confirmação de transação
 

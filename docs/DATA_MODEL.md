@@ -306,25 +306,24 @@ O registro só pode surgir quando `paid_by_entity_id` e `belongs_to_entity_id` d
 
 ## AuditLog
 
-Trilha append-only das mudanças relevantes.
+Trilha append-only das mudanças relevantes. A entrega 01F materializou `private.audit_log`, fora dos schemas da Data API. O desenho anterior, com `user_id`, `action`, `before` e `after` e com leitura do próprio usuário, foi substituído por esta tabela. Não há tela nem RPC de consulta nesta sprint.
 
 | Coluna | Notas |
 | --- | --- |
-| `id` | |
-| `user_id` | Dono dos dados |
-| `actor_user_id` | Quem executou a ação |
-| `action` | Código estável |
-| `entity_table` | Tabela afetada |
-| `entity_id` | |
-| `before` | JSON redigido, nulo em inserção |
-| `after` | JSON redigido, nulo se não couber no evento |
+| `id` | `bigint` identidade |
+| `owner_user_id` | Dono da linha auditada. Vem de `user_id` da linha. Nulo em categoria de sistema |
+| `actor_user_id` | Sessão que executou a mudança, via `auth.uid()`. Nulo quando não há sessão de usuário |
+| `table_name` | Tabela de origem |
+| `record_id` | Identificador da linha |
+| `operation` | `INSERT`, `UPDATE` ou `DELETE` |
+| `old_data` | Snapshot anterior. Nulo em `INSERT` |
+| `new_data` | Snapshot posterior. Nulo em `DELETE` |
+| `changed_fields` | Nulo em `INSERT` e `DELETE`. Em `UPDATE`, colunas de negócio alteradas, sem `updated_at` |
 | `created_at` | |
 
-Materialização: Sprint 01, com as primeiras mutações de cadastro. As sprints seguintes passam a auditar suas próprias mutações.
+A escrita é o trigger `private.audit_row_change()`, `security definer`, com `search_path` vazio. `anon` e `authenticated` não recebem `INSERT`, `UPDATE`, `DELETE` nem `SELECT`. RLS fica ligado e sem policy: um grant futuro ainda não abriria a trilha. O dono da função ignora RLS e é quem insere.
 
-O cliente autenticado pode ler a própria trilha. Não pode inserir, alterar nem apagar. A escrita ocorre por trigger com função em schema privado, fora da API exposta.
-
-O JSON de auditoria não inclui bytes de arquivo, payload bruto do modelo, PAN, CVV nem segredo. Mudança de status guarda o status anterior e o novo.
+O snapshot guarda as colunas da linha de cadastro. Não inclui bytes de arquivo, payload de modelo, número completo de cartão, código de segurança, validade, token, senha nem cookie. As tabelas atuais não têm esses campos.
 
 ## EntityResolutionRule
 
