@@ -1,6 +1,6 @@
 # Decisões
 
-Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, a implementação 01A de e-mail e senha, e a materialização 01B de entidades.
+Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, a implementação 01A de e-mail e senha, a materialização 01B de entidades e a materialização 01C de contas e cartões.
 
 As decisões difíceis de reverter e já aceitas estão nos ADRs 001 a 005. Este arquivo guarda as premissas usadas para planejar as sprints e as escolhas que ainda exigem validação humana.
 
@@ -117,6 +117,18 @@ O índice é `entities_user_id_idx` em `user_id`. Índice composto com `is_activ
 RLS está ligado. Policies de `SELECT`, `INSERT` e `UPDATE` exigem `(select auth.uid()) = user_id`. `INSERT` e `UPDATE` também usam `with check`. Não há policy de `DELETE`.
 
 A Data API do projeto não expõe tabela nova sozinha. `authenticated` recebeu `SELECT`, `INSERT` e `UPDATE`. `TRUNCATE`, `REFERENCES` e `TRIGGER` foram revogados desse papel. `anon` não tem privilégio na tabela.
+
+### 01C — Conta financeira e cartão
+
+A entrega 01C materializou `public.financial_accounts` e `public.payment_cards`. Cada linha pertence a uma entidade e ao mesmo usuário. O `user_id` é a posse usada pelo RLS. A entidade é o dono de domínio.
+
+A chave primária de `entities` não mudou. Foi adicionada a restrição única `(id, user_id)` para a chave estrangeira composta `(entity_id, user_id)`. Assim, uma conta ou um cartão não consegue apontar para entidade de outro usuário mesmo que o RLS aceite o `user_id` da sessão. As duas chaves usam `on delete restrict`.
+
+O tipo da conta é `CHECKING`, `SAVINGS`, `DIGITAL`, `CASH` ou `OTHER`, por check constraint, no mesmo estilo de `entities`. O cartão não guarda número completo, código de segurança, validade, senha nem token. `last_four` é opcional na conta e obrigatório no cartão, sempre com quatro dígitos.
+
+Não há `currency_code` nesta fatia, porque a conta ainda não é uma linha monetária. Não há vínculo entre cartão e conta. Não há policy de `DELETE`. As telas `/app/accounts` e `/app/cards` não criam entidade quando o usuário ainda não tem nenhuma.
+
+Os índices são `user_id`, para a lista protegida pelo RLS, e `entity_id`, para a chave estrangeira. `updated_at` usa uma função específica por tabela no schema `private`, sem framework genérico. `authenticated` tem só `SELECT`, `INSERT` e `UPDATE`. `anon` não tem privilégio.
 
 ### O-08 — Confirmação de transação
 

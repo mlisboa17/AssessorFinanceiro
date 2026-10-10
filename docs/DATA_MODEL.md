@@ -53,47 +53,49 @@ A entrega 01B não cria entidade no cadastro nem no primeiro acesso. Sem entidad
 
 Não há policy de `DELETE` e a interface não apaga a linha. Enquanto existir entidade, a exclusão do usuário autenticado fica bloqueada pela chave estrangeira, até a decisão O-03.
 
+A entrega 01C acrescentou a restrição única `(id, user_id)`. A chave primária continua sendo `id`. O par existe para conta e cartão referenciarem a entidade e o mesmo dono.
+
 ## FinancialAccount
 
-Conta bancária, carteira, dinheiro ou outra fonte de pagamento.
+Conta financeira de uma entidade. O `user_id` guarda a posse. A conta não pertence ao usuário sem entidade.
+
+Materialização: entrega 01C, em 2026-10-10. Tabela `public.financial_accounts`.
 
 | Coluna | Notas |
 | --- | --- |
-| `id` | |
-| `user_id` | |
-| `entity_id` | Entidade dona da conta |
-| `kind` | `bank`, `wallet`, `cash` ou `other` |
-| `name` | |
-| `institution` | Nulo se não houver |
-| `currency_code` | Obrigatório. Default `BRL` no MVP |
+| `id` | `uuid` primário |
+| `user_id` | Dono. Referencia `auth.users(id)` com `on delete restrict` |
+| `entity_id` | Entidade dona da conta. Com `user_id`, referencia `entities(id, user_id)` com `on delete restrict` |
+| `name` | Texto não vazio |
+| `institution_name` | Nulo se não houver |
+| `account_type` | `CHECKING`, `SAVINGS`, `DIGITAL`, `CASH` ou `OTHER` |
+| `last_four` | Quatro dígitos ou nulo |
+| `is_active` | `true` por omissão |
 | `created_at` | |
-| `updated_at` | |
-| `archived_at` | |
+| `updated_at` | Trigger específica `private.set_financial_accounts_updated_at` |
 
-Materialização: Sprint 01.
-
-A conta não é o cartão. Uma transação pode referenciar a conta, o cartão, os dois ou nenhum. Dois instrumentos na mesma transação descrevem um único fato e entram uma vez nos totais.
+A conta não é o cartão. Esta entrega não grava moeda na conta e não cria transação. `currency_code` continua obrigatório nas linhas monetárias futuras.
 
 ## PaymentCard
 
-Cartão usado como instrumento. O cadastro guarda apelido, bandeira e, no máximo, os quatro finais. Não há coluna para PAN, CVV ou validade.
+Cartão de uma entidade. O cadastro guarda nome, emissor, bandeira e exatamente quatro dígitos. Não há coluna para número completo, código de segurança, validade, senha ou token.
+
+Materialização: entrega 01C, em 2026-10-10. Tabela `public.payment_cards`.
 
 | Coluna | Notas |
 | --- | --- |
-| `id` | |
-| `user_id` | |
-| `entity_id` | Entidade responsável pelo cartão |
-| `financial_account_id` | Conta associada, nula se ainda não houver |
+| `id` | `uuid` primário |
+| `user_id` | Dono. Referencia `auth.users(id)` com `on delete restrict` |
+| `entity_id` | Entidade responsável. Com `user_id`, referencia `entities(id, user_id)` com `on delete restrict` |
+| `name` | Texto não vazio |
+| `issuer_name` | Nulo se desconhecido |
 | `brand` | Nulo se desconhecido |
-| `nickname` | |
-| `last4` | Quatro dígitos ou nulo |
+| `last_four` | Exatamente quatro dígitos. Obrigatório |
+| `is_active` | `true` por omissão |
 | `created_at` | |
-| `updated_at` | |
-| `archived_at` | |
+| `updated_at` | Trigger específica `private.set_payment_cards_updated_at` |
 
-Materialização: Sprint 01.
-
-`last4` nulo é permitido para não bloquear o cadastro. A ligação automática por final de cartão exige exatamente quatro dígitos e exatamente um cartão ativo correspondente.
+Esta entrega não liga o cartão a uma conta. A ligação automática por final continua exigindo exatamente quatro dígitos e exatamente um cartão ativo correspondente, quando a sprint de leitura existir.
 
 ## Merchant
 
