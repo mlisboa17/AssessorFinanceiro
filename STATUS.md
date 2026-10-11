@@ -102,6 +102,14 @@ Modelo adotado:
 - categorias privadas por usuário
 - nenhuma cópia das categorias system por usuário
 
+## Validação de interface
+
+UI VALIDATION POLICY
+
+Browser/UI validation is human-controlled. Agents may run automated terminal/headless checks, but must not open or navigate a browser unless explicitly authorized.
+
+Validação humana pendente fica marcada como `HUMAN_VALIDATION_REQUIRED`.
+
 ## Git
 
 Branch:

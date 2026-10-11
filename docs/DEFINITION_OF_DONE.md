@@ -14,7 +14,7 @@ Uma sprint só pode ser considerada DONE quando todos os itens abaixo forem verd
 8. Os riscos residuais estão escritos na sprint ou em `DECISIONS.md`.
 9. A working tree da entrega é compreensível: o que entrou no commit é o que a sprint descreve.
 10. Existe um commit identificável da entrega.
-11. A validação humana exigida pela sprint foi feita. Onde a sprint não exige validação humana, o item é atendido por essa ausência explícita.
+11. A validação humana exigida pela sprint foi feita e confirmada pelo diretor. Onde a sprint não exige validação humana, o item é atendido por essa ausência explícita. Interface que depende de navegador humano permanece `HUMAN_VALIDATION_REQUIRED` até essa confirmação. Sem ela, a sprint não fica totalmente validada em UI.
 
 ## Regras de aplicação
 
@@ -24,6 +24,7 @@ Uma sprint só pode ser considerada DONE quando todos os itens abaixo forem verd
 - Dívida técnica conscientemente adiada continua escrita na sprint depois do DONE. Encerrar a sprint não apaga a dívida.
 - Funcionalidade de sprint futura dentro da entrega atual impede DONE, salvo justificativa técnica concreta registrada em `DECISIONS.md` antes da implementação.
 - A revisão de segurança da sprint usa `SECURITY.md`. Policies copiadas de outra tabela sem examinar o acesso real não atendem o item 5.
+- Browser/UI validation is human-controlled. Agents may run automated terminal/headless checks, but must not open or navigate a browser unless explicitly authorized. O agente não abre navegador, não usa automação visual com janela e não opera a interface em nome do diretor. Playwright, Cypress ou equivalente, quando a sprint autorizar, roda só em modo headless.
 
 ## Evidência mínima de encerramento
 

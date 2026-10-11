@@ -1,6 +1,6 @@
 # Decisões
 
-Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, e as materializações 01A a 01F.
+Estado: atualizado em 2026-10-10 com as correções aprovadas da especificação, as decisões O-02, O-04 e O-08, as materializações 01A a 01F, e a UI VALIDATION POLICY.
 
 As decisões difíceis de reverter e já aceitas estão nos ADRs 001 a 005. Este arquivo guarda as premissas usadas para planejar as sprints e as escolhas que ainda exigem validação humana.
 
@@ -161,6 +161,20 @@ A trilha ficou em `private.audit_log`, fora da Data API. Uma função, `private.
 A redação anterior previa leitura da própria trilha pelo usuário autenticado. Esta entrega não concede `SELECT` e não cria tela nem RPC. A consulta fica para uma superfície futura de suporte. RLS sem policy em `private.audit_log` permanece de propósito.
 
 Categoria de sistema pode ter `owner_user_id` nulo. Mudança sem sessão de usuário pode ter `actor_user_id` nulo.
+
+### UI VALIDATION POLICY
+
+Browser/UI validation is human-controlled. Agents may run automated terminal/headless checks, but must not open or navigate a browser unless explicitly authorized.
+
+- O agente não abre navegador automaticamente.
+- O agente não usa automação visual com janela para navegar na aplicação.
+- O agente não clica, cadastra, entra nem navega pela interface em nome do diretor.
+- Playwright, Cypress ou ferramenta equivalente, se uma sprint autorizar o uso, roda somente em modo headless.
+- Validação de interface que exige navegador humano fica marcada como `HUMAN_VALIDATION_REQUIRED`.
+- O agente entrega ao diretor os passos exatos e curtos dessa validação manual.
+- Lint, teste, build, testes unitários, testes de integração, chamadas HTTP por terminal, consultas Supabase e checagens headless sem janela gráfica continuam permitidos.
+- Nenhuma sprint é tratada como totalmente validada em UI sem a confirmação do diretor.
+- Navegador, interface gráfica ou computer-use só começam com autorização explícita do diretor na própria tarefa.
 
 ### O-08 — Confirmação de transação
 
