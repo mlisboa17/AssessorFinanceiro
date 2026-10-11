@@ -4,7 +4,7 @@
 
 - Sprint 00 — DONE
 - Sprint 01 — DONE
-- Sprint 02 — NOT STARTED
+- Sprint 02 funcional — NOT STARTED
 
 ## Stack Confirmada
 
@@ -14,7 +14,10 @@
 - Supabase
 - Supabase Auth
 - Supabase PostgreSQL
-- Supabase Storage ainda não implementado
+- Supabase CLI autenticado e linked ao projeto correto
+- project ref: nqgntmhcpfrwcyoyefqp
+- bucket privado financial-documents já existe no remoto
+- upload da aplicação ainda não implementado
 - Gemini ainda não implementado
 
 ## Auth
@@ -102,11 +105,33 @@ Modelo adotado:
 - categorias privadas por usuário
 - nenhuma cópia das categorias system por usuário
 
+## Banco
+
+Histórico de migrations local e remoto totalmente alinhado.
+
+Migration recuperada:
+
+- 20261011000913_add_financial_documents.sql
+
+Migration corretiva aplicada:
+
+- 20261011023819_restrict_financial_documents_grants.sql
+
+financial_documents existe no Supabase remoto.
+
+Grants de public.financial_documents:
+
+- authenticated possui apenas SELECT e INSERT
+- authenticated não possui UPDATE, DELETE, TRUNCATE, REFERENCES ou TRIGGER
+- anon não possui privilégios
+
 ## Validação de interface
 
 UI VALIDATION POLICY
 
 Browser/UI validation is human-controlled. Agents may run automated terminal/headless checks, but must not open or navigate a browser unless explicitly authorized.
+
+Agentes não podem abrir navegador. Validação visual é humana.
 
 Validação humana pendente fica marcada como `HUMAN_VALIDATION_REQUIRED`.
 
@@ -129,22 +154,21 @@ main sincronizada com origin/main
 
 Sprint 02 — Document Ingestion
 
-Objetivo:
+O schema remoto de comprovantes já existe. A sprint funcional ainda precisa implementar o código da aplicação:
 
-- bucket privado financial-documents
-- upload JPG / PNG / PDF
-- salvar arquivo original antes de processamento
-- criar financial_documents
+- upload server-side
 - SHA-256
-- status inicial RECEIVED
-- isolamento por usuário
-- cleanup de arquivo órfão
-- integração com audit log
+- validação MIME/tamanho
+- cleanup
+- UI
+- testes
+- docs
 
-REGRA PRINCIPAL:
+REGRA:
 
-SALVAR PRIMEIRO.
-PROCESSAR DEPOIS.
+SALVAR PRIMEIRO, PROCESSAR DEPOIS.
+
+Gemini NÃO implementado.
 
 Nesta sprint NÃO implementar:
 
@@ -158,8 +182,4 @@ Nesta sprint NÃO implementar:
 
 ## Próximo Passo
 
-Executar o prompt aprovado da:
-
-SPRINT 02 — DOCUMENT INGESTION
-
-Antes de qualquer nova feature.
+Retomar Sprint 02 funcional.
